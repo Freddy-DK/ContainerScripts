@@ -8,7 +8,7 @@ if ("$DatabaseInstance" -ne "") {
 }
 Write-Host "Mounting tenant 'default' with database '$tenantDatabaseName' on database server instance '$DatabaseServerInstance'... on '$ServerInstance'" -ForegroundColor Green
 
-$Params = @{ "Force"=$true; "AllowAppDatabaseWrite" = $false }
+$Params = @{ "Force"=$true; "AllowAppDatabaseWrite" = $false; "OverwriteTenantIdInDatabase" = $true }
 if ($tenantEnvironmentType -ne $null) {
     $Params += @{"EnvironmentType" = $tenantEnvironmentType.value }
 }
