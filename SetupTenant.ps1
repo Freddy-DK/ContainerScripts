@@ -12,4 +12,4 @@ $Params = @{ "Force"=$true; "AllowAppDatabaseWrite" = $false }
 if ($tenantEnvironmentType -ne $null) {
     $Params += @{"EnvironmentType" = $tenantEnvironmentType.value }
 }
-Mount-NavTenant -ServerInstance $ServerInstance -Tenant 'default' -DatabaseName $tenantDatabaseName @Params -WarningAction SilentlyContinue
+Mount-NavTenant -ServerInstance $ServerInstance -Tenant 'default' -DatabaseName $tenantDatabaseName -DatabaseCredentials $databaseCredentials @Params -WarningAction SilentlyContinue
