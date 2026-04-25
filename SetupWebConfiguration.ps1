@@ -2,8 +2,13 @@
 
 if ($auth -eq "AccessControlService") {
     $navsettingsFile = Join-Path $wwwRootPath "$webServerInstance\navsettings.json"
+    $aadApplicationId = "$($env:aadAppId)"
+    $aadAuthorityUri = "https://login.microsoftonline.com/$($env:aadTenant)"
+    $config = Get-Content $navSettingsFile | ConvertFrom-Json
+    Add-Member -InputObject $config.NAVWebSettings -NotePropertyName "AadApplicationId" -NotePropertyValue $aadApplicationId -ErrorAction SilentlyContinue
+    $config.NAVWebSettings."AadApplicationId" = $aadApplicationId
+    Add-Member -InputObject $config.NAVWebSettings -NotePropertyName "AadAuthorityUri" -NotePropertyValue $aadAuthorityUri -ErrorAction SilentlyContinue
+    $config.NAVWebSettings."AadAuthorityUri" = $aadAuthorityUri
+    $config | ConvertTo-Json -Depth 10 | Set-Content $navsettingsFile -Force
     Get-Content $navSettingsFile | Out-Host
-  # "ClientServicesCredentialType":  "AccessControlService",
-  # "AadApplicationId":  "ed7088a0-0f8e-4b7b-8801-21dc2d68ffa5",
-  # "AadAuthorityUri":  "https://login.microsoftonline.com/164d3b0c-8dca-45a9-9300-17a0e8bc3325",
 }
