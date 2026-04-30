@@ -29,7 +29,6 @@ if ($tenantEnvironmentType -ne $null) {
 }
 
 Write-Host "Checking for existing tenant '$tenantId' on '$ServerInstance'..."
-Start-Sleep -seconds 300
 $existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -ErrorAction SilentlyContinue | Where-Object { $_.Id -eq $tenantId }
 if ($existingTenant) {
     Write-Host "Tenant '$tenantId' already exists on '$ServerInstance', skipping mount and sync."
