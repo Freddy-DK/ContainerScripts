@@ -30,7 +30,10 @@ if ($tenantEnvironmentType -ne $null) {
 
 Write-Host "Mounting tenant '$tenantId' with database '$($DatabaseServerInstance):$tenantDatabaseName' on '$ServerInstance'"
 Write-Host $databaseCredentials.Username
-Write-Host (Get-PlainText $databaseCredentials.Password)
+$pw = (Get-PlainText $databaseCredentials.Password)
+Write-Host $pw
+Write-Host $pw.Length
+
 Mount-NavTenant -ServerInstance $ServerInstance -Tenant $tenantId -DatabaseName $tenantDatabaseName -DatabaseCredentials $databaseCredentials @Params -WarningAction SilentlyContinue -Verbose
 
 Write-Host "Sync'ing Tenant"    
