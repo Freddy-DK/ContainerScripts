@@ -28,16 +28,17 @@ if ($tenantEnvironmentType -ne $null) {
     $Params += @{"EnvironmentType" = $tenantEnvironmentType.value }
 }
 
-Write-Host "Mounting tenant '$tenantId' with database '$($DatabaseServerInstance):$tenantDatabaseName' on '$ServerInstance'"
-Write-Host $databaseCredentials.Username
-$pw = (Get-PlainText $databaseCredentials.Password)
-Write-Host $pw
-Write-Host $pw.Length
+$existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -Tenant $tenantId -ErrorAction SilentlyContinue
+if ($null -eq $existingTenant) {
+    Write-Host "Mounting tenant '$tenantId' with database '$($DatabaseServerInstance):$tenantDatabaseName' on '$ServerInstance'"
+    Mount-NavTenant -ServerInstance $ServerInstance -Tenant $tenantId -DatabaseName $tenantDatabaseName -DatabaseCredentials $databaseCredentials @Params -WarningAction SilentlyContinue -Verbose
 
-Mount-NavTenant -ServerInstance $ServerInstance -Tenant $tenantId -DatabaseName $tenantDatabaseName -DatabaseCredentials $databaseCredentials @Params -WarningAction SilentlyContinue -Verbose
-
-Write-Host "Sync'ing Tenant"    
-Sync-NAVTenant  -ServerInstance $ServerInstance `
-                -Tenant $tenantId `
-                -Force
+    Write-Host "Sync'ing Tenant"    
+    Sync-NAVTenant  -ServerInstance $ServerInstance `
+                    -Tenant $tenantId `
+                    -Force
+}
+else {
+    Write-Host "Tenant '$tenantId' already exists on '$ServerInstance', skipping mount and sync."
+}
 
