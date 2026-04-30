@@ -4,8 +4,10 @@ if ("$env:licensefile" -eq "") {
 }
 # ReadEncryptionKey.ps1
 # If EncryptionKeyBlobSasUrl is set and the blob exists, downloads it to c:\run\my\DynamicsNAV.key
+Write-Host "Checking for encryption key in blob storage..."
 $sasUrl = $env:EncryptionKeyBlobSasUrl
 if ($sasUrl) {
+    Write-Host "EncryptionKeyBlobSasUrl is set. Attempting to download encryption key from blob storage..."
     $targetPath = 'c:\run\my\DynamicsNAV.key'
     try {
         Invoke-WebRequest -Uri $sasUrl -Method Get -OutFile $targetPath -UseBasicParsing -ErrorAction Stop
