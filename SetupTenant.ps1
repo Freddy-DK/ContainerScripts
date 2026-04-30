@@ -30,8 +30,16 @@ if ($tenantEnvironmentType -ne $null) {
 
 Write-Host "Checking for existing tenant '$tenantId' on '$ServerInstance'..."
 Start-Sleep -seconds 300
-$existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -Tenant $tenantId -ErrorAction SilentlyContinue
-if ($null -eq $existingTenant) {
+$existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -ErrorAction SilentlyContinue | Where-Object { $_.Id -eq $tenantId }
+if ($existingTenant) {
+    Write-Host "Tenant '$tenantId' already exists on '$ServerInstance', skipping mount and sync."
+    while ($existingTenant.State -ne "Operational") {
+        Write-Host "Tenant '$tenantId' is in state '$($existingTenant.State)'."
+        Start-Sleep -seconds 5
+        $existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -ErrorAction SilentlyContinue | Where-Object { $_.Id -eq $tenantId }
+    }
+}
+else {
     Write-Host "Mounting tenant '$tenantId' with database '$($DatabaseServerInstance):$tenantDatabaseName' on '$ServerInstance'"
     Mount-NavTenant -ServerInstance $ServerInstance -Tenant $tenantId -DatabaseName $tenantDatabaseName -DatabaseCredentials $databaseCredentials @Params -WarningAction SilentlyContinue -Verbose
 
@@ -39,8 +47,5 @@ if ($null -eq $existingTenant) {
     Sync-NAVTenant  -ServerInstance $ServerInstance `
                     -Tenant $tenantId `
                     -Force
-}
-else {
-    Write-Host "Tenant '$tenantId' already exists on '$ServerInstance', skipping mount and sync."
 }
 
