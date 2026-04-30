@@ -28,6 +28,7 @@ if ($tenantEnvironmentType -ne $null) {
     $Params += @{"EnvironmentType" = $tenantEnvironmentType.value }
 }
 
+Write-Host "Checking for existing tenant '$tenantId' on '$ServerInstance'..."
 $existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -Tenant $tenantId -ErrorAction SilentlyContinue
 if ($null -eq $existingTenant) {
     Write-Host "Mounting tenant '$tenantId' with database '$($DatabaseServerInstance):$tenantDatabaseName' on '$ServerInstance'"
