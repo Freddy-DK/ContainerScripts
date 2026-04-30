@@ -29,6 +29,7 @@ if ($tenantEnvironmentType -ne $null) {
 }
 
 Write-Host "Checking for existing tenant '$tenantId' on '$ServerInstance'..."
+Start-Sleep -seconds 300
 $existingTenant = Get-NAVTenant -ServerInstance $ServerInstance -Tenant $tenantId -ErrorAction SilentlyContinue
 if ($null -eq $existingTenant) {
     Write-Host "Mounting tenant '$tenantId' with database '$($DatabaseServerInstance):$tenantDatabaseName' on '$ServerInstance'"
